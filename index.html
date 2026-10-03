@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار علم الخلية الشامل - المحاضرة الأولى</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+        .option-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-card:hover:not(.disabled) {
+            transform: translateY(-2px);
+            border-color: #3b82f6;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="bg-white/10 p-2 rounded-xl backdrop-blur-md">
+                    <i class="fa-solid to-flask-vial text-2xl text-blue-200"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold tracking-wide">اختبار علم الخلية الشامل</h1>
+                    <p class="text-xs text-blue-200 font-light">المحاضرة الأولى: مقدمة، التاريخ، والأشكال والوظائف</p>
+                </div>
+            </div>
+            <div id="quiz-progress-badge" class="hidden bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold">
+                سؤال <span id="current-q-num">1</span> من 80
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl w-full mx-auto p-4 md:p-6 flex-grow flex flex-col justify-center">
+
+        <!-- Welcome / Start Screen -->
+        <div id="start-screen" class="bg-white rounded-2xl p-6 md:p-10 custom-shadow text-center border border-slate-100">
+            <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                <i class="fa-solid fa-microscope"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-3">مرحباً بك في اختبار علم الخلية التفاعلي</h2>
+            <p class="text-slate-600 mb-8 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
+                تم إعداد هذا الاختبار بدقة متناهية وشاملة بناءً على محتوى المحاضرة الأولى ليتكون من <span class="font-bold text-blue-600">80 سؤالاً</span> (60 سؤال اختيار من متعدد + 20 سؤال صح أم خطأ) لتقييم وفحص مدى فهمك واستيعابك لكافة التفاصيل والعلماء والأشكال والوظائف التكيفية للخلايا.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-right">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center space-x-3 space-x-reverse">
+                    <i class="fa-solid fa-list-check text-blue-500 text-xl"></i>
+                    <div>
+                        <div class="text-xs text-slate-500">عدد الأسئلة</div>
+                        <div class="font-bold text-slate-700">80 سؤالاً تقييمياً</div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center space-x-3 space-x-reverse">
+                    <i class="fa-solid fa-layer-group text-purple-500 text-xl"></i>
+                    <div>
+                        <div class="text-xs text-slate-500">نوع الأسئلة</div>
+                        <div class="font-bold text-slate-700">60 MCQ + 20 صح/خطأ</div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center space-x-3 space-x-reverse">
+                    <i class="fa-solid fa-graduation-cap text-emerald-500 text-xl"></i>
+                    <div>
+                        <div class="text-xs text-slate-500">التغذية الراجعة</div>
+                        <div class="font-bold text-slate-700">تصحيح وشرح فوري</div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full md:w-auto px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 text-lg">
+                ابدأ الاختبار الآن <i class="fa-solid fa-arrow-left mr-2"></i>
+            </button>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-screen" class="hidden flex-col gap-6">
+            
+            <!-- Progress Bar & Navigator -->
+            <div class="bg-white rounded-xl p-4 custom-shadow border border-slate-100 flex flex-col gap-3">
+                <div class="flex justify-between items-center text-sm font-bold text-slate-600">
+                    <span id="section-title" class="text-blue-600 font-extrabold">القسم الأول: الاختيار من متعدد</span>
+                    <span>التقدم: <span id="progress-percent" class="text-indigo-600">0%</span></span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <!-- Quick question dots navigator -->
+                <div id="questions-nav" class="flex gap-1.5 overflow-x-auto py-1 scrollbar-hide">
+                    <!-- Dots will be generated here -->
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-2xl p-6 md:p-8 custom-shadow border border-slate-100 flex flex-col justify-between min-h-[380px]">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span id="question-badge" class="px-3 py-1 bg-blue-50 text-blue-700 font-bold rounded-lg text-xs border border-blue-100">
+                            سؤال 1
+                        </span>
+                        <span id="question-topic" class="text-xs font-semibold text-slate-400">
+                            تاريخ علم الخلية والعلماء
+                        </span>
+                    </div>
+
+                    <h3 id="question-text" class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed mb-6">
+                        جاري تحميل السؤال...
+                    </h3>
+
+                    <!-- Options Container -->
+                    <div id="options-container" class="grid grid-cols-1 gap-3">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Explanation Box -->
+                <div id="explanation-box" class="hidden mt-6 p-4 rounded-xl text-sm leading-relaxed border transition-all duration-300">
+                    <div class="font-bold mb-1 flex items-center gap-2" id="explanation-title">
+                        <i class="fa-solid fa-circle-info"></i> الشرح والتوضيح العلمي:
+                    </div>
+                    <p id="explanation-text" class="text-slate-700"></p>
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
+                    <button id="prev-btn" onclick="prevQuestion()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-chevron-right ml-1"></i> السابق
+                    </button>
+                    <button id="next-btn" onclick="nextQuestion()" disabled class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
+                        التالي <i class="fa-solid fa-chevron-left mr-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden bg-white rounded-2xl p-6 md:p-10 custom-shadow text-center border border-slate-100">
+            <div id="result-icon" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner">
+                <!-- Icon via JS -->
+            </div>
+            
+            <h2 id="result-title" class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2"></h2>
+            <p id="result-subtitle" class="text-slate-600 mb-8 text-sm md:text-base"></p>
+
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 mb-8 max-w-lg mx-auto">
+                <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">النتيجة النهائية</div>
+                <div class="text-4xl md:text-5xl font-black text-indigo-600 mb-4">
+                    <span id="score-percentage">0</span>%
+                </div>
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200 text-sm">
+                    <div>
+                        <div class="text-slate-400 text-xs">الإجابات الصحيحة</div>
+                        <div class="text-emerald-600 font-bold text-lg"><span id="correct-count">0</span> / 80</div>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 text-xs">الإجابات الخاطئة</div>
+                        <div class="text-rose-600 font-bold text-lg"><span id="wrong-count">0</span> / 80</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <button onclick="restartQuiz()" class="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition">
+                    <i class="fa-solid fa-rotate-right ml-2"></i> إعادة الاختبار
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+        تم التطوير للتعليم التفاعلي الشامل &copy; 2026 - علم الخلية (المحاضرة الأولى)
+    </footer>
+
+    <!-- Script Data & Logic -->
+    <script>
+        const quizData = [
+            // MCQ Questions (1 to 60)
+            {
+                type: "mcq",
+                question: "ما هو التعريف الدقيق لعلم الخلية (Cytology)؟",
+                options: [
+                    "العلم الذي يختص بدراسة التركيب الكيميائي للجينات فقط",
+                    "العلم الذي يختص بدراسة الخلية من حيث الشكل والنوع والتركيب والوظيفة والتغيرات أثناء التمايز والنمو والمرض",
+                    "العلم الذي يقتصر على دراسة انقسام الخلايا السرطانية",
+                    "العلم الذي يدرس الأنسجة النباتية والحيوانية دون التطرق للتركيب الخلوي"
+                ],
+                correct: 1,
+                explanation: "وفقاً للمحاضرة، علم الخلية هو العلم الذي يختص بدراسة الخلية من حيث الشكل والنوع والتركيب والوظيفة وما يطرأ عليها من تغيرات أثناء عملية التمايز والنمو والتقدم في العمر والمرض."
+            },
+            {
+                type: "mcq",
+                question: "تتكون الخلية بشكل أساسي من السيتوبلازم والنواة ومحاطة من الخارج بـ:",
+                options: [
+                    "جدار خلوي سميك فقط",
+                    "غشاء خلوي (Cell membrane)",
+                    "غلاف نووي مزدوج",
+                    "طبقة بروتينية عازلة"
+                ],
+                correct: 1,
+                explanation: "تُعرف الخلية بأنها الوحدة الأساسية لبناء الكائن الحي وتتكون من السيتوبلازم والنواة ومحاطة من الخارج بغشاء خلوي."
+            },
+            {
+                type: "mcq",
+                question: "بدأت المرحلة الأولى من علم الخلية مع الفحوصات المجهرية للعالم:",
+                options: [
+                    "روبرت براون",
+                    "ماتياس شلايدن",
+                    "روبرت هوك",
+                    "إرنست أوفرتون"
+                ],
+                correct: 2,
+                explanation: "بدأت المرحلة الأولى من علم الخلية مع الفحوصات المجهرية للعالم الإنجليزي روبرت هوك عام 1665."
+            },
+            {
+                type: "mcq",
+                question: "في أي عام قدم العالم روبرت هوك مصطلح \"خلية\" لوصف خلايا الفلين الميتة؟",
+                options: [
+                    "1831",
+                    "1665",
+                    "1838",
+                    "1895"
+                ],
+                correct: 1,
+                explanation: "قام روبرت هوك بفحص خلايا الفلين الميتة وقدم مصطلح \"خلية\" (Cell) لوصفها في عام 1665."
+            },
+            {
+                type: "mcq",
+                question: "قام العالم الاسكتلندي روبرت براون بوصف نواة الخلية في عام:",
+                options: [
+                    "1665",
+                    "1831",
+                    "1846",
+                    "1855"
+                ],
+                correct: 1,
+                explanation: "في عام 1831 قام العالم الاسكتلندي روبرت براون بوصف نواة الخلية لأول مرة."
+            },
+            {
+                type: "mcq",
+                question: "عالم النبات الألماني الذي شارك في وضع حجر الأساس لنظرية الخلية هو:",
+                options: [
+                    "ثيودور شوان",
+                    "ماتياس شلايدن",
+                    "روبرت هوك",
+                    "كوليكر"
+                ],
+                correct: 1,
+                explanation: "العالم الألماني ماتياس شلايدن هو عالم نبات شارك مع ثيودور شوان في صياغة نظرية الخلية."
+            },
+            {
+                type: "mcq",
+                question: "عالم الفسيولوجي الألماني الذي أعلن أن الحيوانات تتكون أيضاً من خلايا هو:",
+                options: [
+                    "ثيودور شوان",
+                    "ماتياس شلايدن",
+                    "روبرت براون",
+                    "فون مول"
+                ],
+                correct: 0,
+                explanation: "العالم ثيودور شوان هو عالم فسيولوجي ألماني أعلن بالتعاون مع شلايدن أن الخلايا هي الوحدات الأساسية للحيوانات والنباتات."
+            },
+            {
+                type: "mcq",
+                question: "تم وضع وتأسيس \"نظرية الخلية\" بين عامي:",
+                options: [
+                    "1665 - 1670",
+                    "1831 - 1835",
+                    "1838 - 1839",
+                    "1895 - 1900"
+                ],
+                correct: 2,
+                explanation: "في عامي 1838 و 1839 كان العالمان شلايدن وشوان أول من ذكر بوضوح أن الخلايا هي الجسيمات الأساسية للنباتات والحيوانات وأسسا نظرية الخلية."
+            },
+            {
+                type: "mcq",
+                question: "تضمنت نظرية الخلية حقيقة علمية مهمة للغاية وهي أن كل خلية:",
+                options: [
+                    "تنشأ تلقائياً من مواد غير حية",
+                    "تتكون فقط في وجود الضوء",
+                    "تنشأ من انقسام خلية سابقة لها",
+                    "تحتوي على جدار خلوي سيليولوزي"
+                ],
+                correct: 2,
+                explanation: "من أهم المبادئ التي تضمنتها نظرية الخلية أن كل خلية تنشأ من انقسام خلية سابقة لها."
+            },
+            {
+                type: "mcq",
+                question: "أي من العلماء التالية أسماؤهم اشتركوا في وصف \"البروتوبلازم\" عام 1846؟",
+                options: [
+                    "روبرت هوك وروبرت براون",
+                    "شلايدن وشوان",
+                    "دوجاردين وشولتز وبركنجي وفون مول",
+                    "فيرشو وكوليكر"
+                ],
+                correct: 2,
+                explanation: "في عام 1846 قام الباحثون دوجاردين وشولتز وبركنجي وفون مول بوصف البروتوبلازم."
+            },
+            {
+                type: "mcq",
+                question: "في عام 1855، أوضح العالم الألماني فيرشو والعالم السويسري كوليكر أن الكائن الحي يتطور من خلال:",
+                options: [
+                    "النمو المباشر للبروتوبلازم",
+                    "التحام خليتين هما الحيوان المنوي والبويضة (الإخصاب)",
+                    "الانقسام التلقائي للجدار الخلوي",
+                    "تجمع الميتوكندريا في السيتوبلازم"
+                ],
+                correct: 1,
+                explanation: "أوضح فيرشو وكوليكر عام 1855 أن الكائن الحي يتطور من التحام خليتين هما الحيوان المنوي والبويضة من خلال عملية الإخصاب."
+            },
+            {
+                type: "mcq",
+                question: "العالم البريطاني إرنست أوفرتون قام بوصف الغشاء البلازمي ووضع تصوراً بدائياً لتركيبه في عام:",
+                options: [
+                    "1831",
+                    "1846",
+                    "1855",
+                    "1895"
+                ],
+                correct: 3,
+                explanation: "في عام 1895 قام العالم البريطاني إرنست أوفرتون بوصف الغشاء البلازمي ووضع تصورا بدائيا عن تركيبه المفترض."
+            },
+            {
+                type: "mcq",
+                question: "يتراوح حجم معظم الخلايا الحيوانية بين:",
+                options: [
+                    "1 إلى 5 ميكرون",
+                    "10 إلى 100 ميكرون",
+                    "100 إلى 500 ميكرون",
+                    "1 إلى 10 ملليمتراً"
+                ],
+                correct: 1,
+                explanation: "ينص المحتوى على أن حجم معظم الخلايا الحيوانية يتراوح بين 10 إلى 100 ميكرون."
+            },
+            {
+                type: "mcq",
+                question: "ما هو السبب الأساسي لتنوع أشكال وأحجام الخلايا في كائن حي واحد ناشئ من خلية واحدة؟",
+                options: [
+                    "العمر وموقع الخلايا وتطورها الجنيني والوظيفة",
+                    "اختلاف المحتوى الجيني DNA داخل كل خلية",
+                    "كمية الماء الخارجية فقط",
+                    "درجة حرارة المحيط الخارجي"
+                ],
+                correct: 0,
+                explanation: "يعود الاختلاف في حجم وشكل الخلايا إلى أسباب مثل العمر، موقع الخلايا، تطورها الجنيني، والوظيفة التي تعتبر ذات أهمية كبيرة."
+            },
+            {
+                type: "mcq",
+                question: "تتميز كريات الدم الحمراء بشكليها القرصي المقعر، وهو ما يساعدها على:",
+                options: [
+                    "انقسامها السريع في الدم",
+                    "المرور عبر الأوعية الدموية الضيقة بسهولة",
+                    "تخزين الدهون بكميات كبيرة",
+                    "إرسال السيالات العصبية للمخ"
+                ],
+                correct: 1,
+                explanation: "تتميز كريات الدم الحمراء بشكلها القرصي الذي يساعدها في المرور عبر الأوعية الدموية الضيقة."
+            },
+            {
+                type: "mcq",
+                question: "تتميز الخلايا العصبية بوجود زوائد شجيرية كثيرة ونتوء بارز طويل يسمى:",
+                options: [
+                    "القدم الكاذب",
+                    "المحور (Axon)",
+                    "الذيل المغزلي",
+                    "الهدب"
+                ],
+                correct: 1,
+                explanation: "تحتوي الخلية العصبية على نتوء بارز طويل (المحور) يرتبط مع خلايا عصبية أخرى لنقل الرسائل العصبية."
+            },
+            {
+                type: "mcq",
+                question: "تُعد الخلايا الدهنية والبويضات من أكبر الخلايا حجماً بسب ب:",
+                options: [
+                    "وجود أكثر من نواة داخلها",
+                    "تعدد المحاور الممتدة منها",
+                    "وجود الكثير من المواد الغذائية المخزنة فيها",
+                    "سمك جدارها الخلوي الخارجي"
+                ],
+                correct: 2,
+                explanation: "تعتبر الخلايا الدهنية والبويضات من أكبر الخلايا حجماً ويعود ذلك لوجود الكثير من المواد الغذائية المخزنة في هذه الخلايا."
+            },
+            {
+                type: "mcq",
+                question: "الشكل الهيكلي والتكيّفي للألياف العضلية الملساء يكون:",
+                options: [
+                    "قرصي مقعر",
+                    "مغزلي",
+                    "كروي غير منتظم",
+                    "إسطواني متفرع فقط"
+                ],
+                correct: 1,
+                explanation: "الشكل المغزلي يتناسب مع العضلات الملساء لخدمة وظيفتها الانقباضية."
+            },
+            {
+                type: "mcq",
+                question: "يكون شكل الخلايا العضلية الهيكلية والقلبية:",
+                options: [
+                    "مغزلي ذيلي",
+                    "إسطواني",
+                    "قرصي",
+                    "أمبيبي متغير"
+                ],
+                correct: 1,
+                explanation: "الشكل الإسطواني يخدم وظيفة الخلايا العضلية الهيكلية والقلبية."
+            },
+            {
+                type: "mcq",
+                question: "تتميز الحيوانات المنوية بشكل تكيفي خاص يسمى:",
+                options: [
+                    "المغزلي الذيلِي",
+                    "القرصي المقعر",
+                    "الأنبوبي المتشعب",
+                    "الكروي المحاط بالدهون"
+                ],
+                correct: 0,
+                explanation: "تمتلك الحيوانات المنوية شكلاً مغزلياً ذيلياً يساعدها على الحركة والسباحة للوصول للبويضة."
+            },
+            {
+                type: "mcq",
+                question: "تتواجد الخلايا المهدبة التي تنتهي بأهداب لتأدية وظائف تحريك المواد في بطانة:",
+                options: [
+                    "الأوعية الدموية والشعيرات",
+                    "القصبة الهوائية والأمعاء وقنوات المبايض",
+                    "الجلد الخارجي والعظام",
+                    "الخلايا العصبية والدهنية"
+                ],
+                correct: 1,
+                explanation: "تتواجد الخلايا المهدبة في بطانة القصبة الهوائية والأمعاء وقنوات المبايض لتخدم وظيفتها."
+            },
+            {
+                type: "mcq",
+                question: "تتكيف خلايا الأميبا وخلايا الدم البيضاء بأشكال متباينة وغير ثابتة بهدف:",
+                options: [
+                    "تخزين النشا الحيواني",
+                    "خدمة وظيفتها كالحركة بالاقدام الكاذبة والبلعمة",
+                    "تسهيل عملية الانقسام الميوزي",
+                    "تكوين ألياف عضلية"
+                ],
+                correct: 1,
+                explanation: "تتغير أشكال الخلايا الأميبية وخلايا الدم البيضاء وتتتكيف بأشكال متباينة لخدمة وظيفتها (مثل الحركة والبلعمة)."
+            },
+            {
+                type: "mcq",
+                question: "أول من قدم وصفاً علمياً لنواة الخلية هو العالم:",
+                options: [
+                    "روبرت هوك",
+                    "روبرت براون",
+                    "إرنست أوفرتون",
+                    "فون مول"
+                ],
+                correct: 1,
+                explanation: "العالم الاسكتلندي روبرت براون هو أول من وصف النواة عام 1831."
+            },
+            {
+                type: "mcq",
+                question: "مصطلح \"بروتوبلازم\" تشارك في وصفه علماء سنة 1846، منهم العالم:",
+                options: [
+                    "بركنجي",
+                    "روبرت هوك",
+                    "إرنست أوفرتون",
+                    "كوليكر"
+                ],
+                correct: 0,
+                explanation: "الباحثون هم دوجاردين وشولتز وبركنجي وفون مول."
+            },
+            {
+                type: "mcq",
+                question: "أي النواحي التالية لا يغطيها علم الخلية بشكل مباشر وفقاً للتعريف؟",
+                options: [
+                    "الشكل والتركيب",
+                    "التغيرات أثناء المرض والتقدم في العمر",
+                    "حركة الكواكب والتربة المجاورة",
+                    "الوظيفة والتمايز"
+                ],
+                correct: 2,
+                explanation: "علم الخلية يدرس الشكل والنوع والتركيب والوظيفة والتمايز والنمو والتقدم في العمر والمرض للخلية."
+            },
+            {
+                type: "mcq",
+                question: "العالم الذي يعتبر مؤسس علم الأنسجة المرضية وساهم في إثبات عملية الإخصاب مع كوليكر هو:",
+                options: [
+                    "فيرشو",
+                    "أوفرتون",
+                    "روبرت براون",
+                    "شلايدن"
+                ],
+                correct: 0,
+                explanation: "فيرشو هو عالم الأنسجة المرضية الألماني."
+            },
+            {
+                type: "mcq",
+                question: "تتيح الزوائد الشجيرية للخلية العصبية الاستجابة والربط بـ:",
+                options: [
+                    "محور عصبي واحد فقط",
+                    "الآلاف من محاور الخلايا العصبية الأخرى",
+                    "خلايا دهنية مجاورة فقط",
+                    "كريات الدم الحمراء"
+                ],
+                correct: 1,
+                explanation: "تستطيع الخلية العصبية نقل الآلاف من الرسائل العصبية من خلال زوائدها الشجيرية المرتبطة بالآلاف من محاور الخلايا العصبية الأخرى."
+            },
+            {
+                type: "mcq",
+                question: "من أسباب تباين واختلاف أشكال الخلايا الأساسية التي ذُكرت في المحاضرة:",
+                options: [
+                    "الوظيفة والموقع والعمر والتطور الجنيني",
+                    "لون الكائن الحي الخارجي",
+                    "كمية الأكسجين في الغلاف الجوي",
+                    "نوع المجهر المستخدم في الفحص"
+                ],
+                correct: 0,
+                explanation: "يعود الاختلاف في حجم وشكل الخلايا إلى العمر والموقع والتطور الجنيني والوظيفة."
+            },
+            {
+                type: "mcq",
+                question: "الخلية التي تخزن قطيرات دهنية واسعة وتزاح نواتها للطرف هي الخلية:",
+                options: [
+                    "العصبية",
+                    "الدهنية",
+                    "العضلية الملساء",
+                    "الطلائية المهدبة"
+                ],
+                correct: 1,
+                explanation: "الخلايا الدهنية تحتوي على مستودع دهني كبير (Fat reservoir) يدفع النواة والسيتوبلازم للأطراف."
+            },
+            {
+                type: "mcq",
+                question: "ما العلم الذي أتاح دراسة التفاصيل الكيميائية الدقيقة لأجزاء الخلية وعزل مكوناتها؟",
+                options: [
+                    "علم الفلك",
+                    "علم الكيمياء الحيوية (علماء الكيمياء)",
+                    "علم الجيولوجيا",
+                    "علم الأرصاد"
+                ],
+                correct: 1,
+                explanation: "تمكن علماء الكيمياء من عزل المكونات الكيميائية لمعظم أجزاء الخلية ودرسوها بشكل واسع ومتطور."
+            },
+            {
+                type: "mcq",
+                question: "التركيب الخلوي الذي وضع له إرنست أوفرتون التصور البدائي الأول هو:",
+                options: [
+                    "النواة",
+                    "الميتوكندريا",
+                    "الغشاء البلازمي",
+                    "شبكة الكروماتين"
+                ],
+                correct: 2,
+                explanation: "إرنست أوفرتون وصف الغشاء البلازمي ووضع تصورا بدائيا لتركيبه عام 1895."
+            },
+            {
+                type: "mcq",
+                question: "أي مما يلي يُعد من أكبر الخلايا حجماً في جسم الكائن الحي؟",
+                options: [
+                    "كريات الدم الحمراء",
+                    "الخلية الدهنية والبويضة",
+                    "الخلية الطلائية",
+                    "الحيوان المنوي"
+                ],
+                correct: 1,
+                explanation: "تعتبر الخلايا الدهنية والبويضات من أكبر الخلايا حجماً لتخزين المواد الغذائية."
+            },
+            {
+                type: "mcq",
+                question: "تم مراقبة فحص خلايا الفلين بواسطة روبرت هوك، وكانت هذه الخلايا في الحقيقة خلايا:",
+                options: [
+                    "حية تنقسم نشطاً",
+                    "ميتة",
+                    "دهنية متضخمة",
+                    "عصبية جافة"
+                ],
+                correct: 1,
+                explanation: "لاحظ روبرت هوك خلايا الفلين الميتة وقدم مصطلح \"خلية\" لوصفها."
+            },
+            {
+                type: "mcq",
+                question: "أي أجهزة الجسم يحتوي سطحه الداخلي على خلايا مهدبة وفق المذكور بالمحاضرة؟",
+                options: [
+                    "بطانة القصبة الهوائية والأمعاء وقنوات المبايض",
+                    "الأوعية الدموية والشرايين الرئيسية",
+                    "المخ والنخاع شوكي",
+                    "الطبقة الخارجية للجلد"
+                ],
+                correct: 0,
+                explanation: "توجد الخلايا المهدبة في بطانة القصبة الهوائية والأمعاء وقنوات المبايض لتنظيف أو تحريك المواد."
+            },
+            {
+                type: "mcq",
+                question: "العالم السويسري الذي اشترك مع فيرشو في توضيح عملية الإخصاب هو عالم الأجنة:",
+                options: [
+                    "كوليكر",
+                    "شولتز",
+                    "فون مول",
+                    "دوجاردين"
+                ],
+                correct: 0,
+                explanation: "عالم الأجنة السويسري كوليكر."
+            },
+            {
+                type: "mcq",
+                question: "تتوزع الكروموسومات وتنفصل أزواجها أثناء عمليات الانقسام الخلوي ومراحل الانقسام الاختزالي في:",
+                options: [
+                    "الخلايا الجسدية والجنسية",
+                    "الفراغ الخارجي للخلية",
+                    "داخل الغشاء البلازمي مباشرة بدون نواة",
+                    "الخلايا الميتة فقط"
+                ],
+                correct: 0,
+                explanation: "تدرس التفاصيل الكاملة للانقسام الاختزالي في الخلايا الجنسية وتوزيع الكروموسومات."
+            },
+            {
+                type: "mcq",
+                question: "جنسية العالم إرنست أوفرتون هي:",
+                options: [
+                    "ألماني",
+                    "بريطاني",
+                    "سويسري",
+                    "اسكتلندي"
+                ],
+                correct: 1,
+                explanation: "العالم البريطاني إرنست أوفرتون."
+            },
+            {
+                type: "mcq",
+                question: "جنسية العالم روبرت براون هي:",
+                options: [
+                    "إنجليزي",
+                    "اسكتلندي",
+                    "ألماني",
+                    "فرنسي"
+                ],
+                correct: 1,
+                explanation: "قام العالم الاسكتلندي روبرت براون بوصف نواة الخلية."
+            },
+            {
+                type: "mcq",
+                question: "جنسية العالم روبرت هوك هي:",
+                options: [
+                    "إنجليزي",
+                    "أمريكي",
+                    "ألماني",
+                    "سويسري"
+                ],
+                correct: 0,
+                explanation: "الفحوصات المجهرية للعالم الإنجليزي روبرت هوك."
+            },
+            {
+                type: "mcq",
+                question: "ماذا يسمى المحتوى الحي داخل الخلية الذى وصفه العلماء دوجاردين وشولتز وبركنجي وفون مول؟",
+                options: [
+                    "السينتريول",
+                    "البروتوبلازم",
+                    "جدار الخلية",
+                    "الميتوكندريا"
+                ],
+                correct: 1,
+                explanation: "قام الباحثون الأربعة بوصف البروتوبلازم عام 1846."
+            },
+            {
+                type: "mcq",
+                question: "تنشأ الخلايا الجديدة في الكائنات الحية من خلال:",
+                options: [
+                    "التجمع العشوائي للبروتينات",
+                    "انقسام خلايا سابقة لها",
+                    "التشكل المباشر من الماء والدهون",
+                    "الانقسام الذاتي للنواة بمفردها خارج الخلية"
+                ],
+                correct: 1,
+                explanation: "نصت نظرية الخلية على أن كل خلية تنشأ من انقسام خلية سابقة لها."
+            },
+            {
+                type: "mcq",
+                question: "تختلف شكل وحجم الخلية بسبب العوامل التالية ما عدا:",
+                options: [
+                    "الوظيفة التي تؤديها",
+                    "عمر الخلية وموقعها",
+                    "تطورها الجنيني",
+                    "اسم المجهر المستعمل"
+                ],
+                correct: 3,
+                explanation: "اسم المجهر المستعمل ليس له أي علاقة بالحجم أو الشكل البيولوجي للخلية."
+            },
+            {
+                type: "mcq",
+                question: "الخلايا التي تتميز بسعة حجمها ويمتد منها نتوء طويل للربط بين مناطق متباعدة هي:",
+                options: [
+                    "الخلايا العصبية",
+                    "كريات الدم الحمراء",
+                    "الخلايا الدهنية",
+                    "الخلايا الطلائية"
+                ],
+                correct: 0,
+                explanation: "الخلايا العصبية تتميز بسعة حجمها وجود نتوء طويل يرتبط مع خلايا بعيدة لنقل الإشارات."
+            },
+            {
+                type: "mcq",
+                question: "تساعد الأشكال المتباينة والمتغيرة لخلايا الدم البيضاء على أداء وظيفة:",
+                options: [
+                    "نقل الأكسجين",
+                    "ابتلاع الأجسام الغريبة والوصول للأنسجة (الحماية والحصانة)",
+                    "تخزين الدهون للحرارة",
+                    "انقباض العضلات"
+                ],
+                correct: 1,
+                explanation: "التكيف بأشكال متباينة ومتغيرة يخدم وظيفة خلايا الدم البيضاء والحماية والبلعمة."
+            },
+            {
+                type: "mcq",
+                question: "تسمى الخلية الجنسية الأنثوية بـ:",
+                options: [
+                    "Ovocyte (البويضة)",
+                    "Sperm (الحيوان المنوي)",
+                    "Adipose cell",
+                    "Epithelial cell"
+                ],
+                correct: 0,
+                explanation: "البويضة (Ovocyte) هي الخلية الجنسية الأنثوية المحملة بالغذاء."
+            },
+            {
+                type: "mcq",
+                question: "تسمى الخلية الجنسية الذكرية بـ:",
+                options: [
+                    "Sperm (الحيوان المنوي)",
+                    "Ameoba cell",
+                    "Nerve cell",
+                    "Smooth muscle cell"
+                ],
+                correct: 0,
+                explanation: "الحيوان المنوي (Sperm) هو الخلية الجنسية الذكرية ذو الشكل المغزلي الذيلِي."
+            },
+            {
+                type: "mcq",
+                question: "تسمى الخلية الدهنية باللاتينية/الإنجليزية بـ:",
+                options: [
+                    "Adipose cell / Adipocyte",
+                    "Nerve cell",
+                    "Epithelial cell",
+                    "Ameoba cell"
+                ],
+                correct: 0,
+                explanation: "الخلية الدهنية تسمى Adipose cell أو Adipocyte."
+            },
+            {
+                type: "mcq",
+                question: "أي نوع من الخلايا العضلية يمتلك شكلاً إسطوانياً بناءً على ما ورد بالمحاضرة؟",
+                options: [
+                    "العضلات الملساء فقط",
+                    "العضلات الهيكلية والقلبية",
+                    "جميع أنواع العضلات بلا استثناء",
+                    "عضلات الأوعية الدموية فقط"
+                ],
+                correct: 1,
+                explanation: "الشكل الإسطواني يخص العضلات الهيكلية والقلبية، بينما الملساء شكلها مغزلي."
+            },
+            {
+                type: "mcq",
+                question: "في الخلية الدهنية، تشغل معظم مساحة الخلية بــ:",
+                options: [
+                    "النواة في المركز",
+                    "مستودع الدهون (Fat reservoir)",
+                    "الشبكة الاندوبلازمية",
+                    "الميتوكندريا"
+                ],
+                correct: 1,
+                explanation: "مستودع الدهون (Fat reservoir) يشغل الجزء الأكبر من حجم الخلية الدهنية."
+            },
+            {
+                type: "mcq",
+                question: "المقياس الميكروسكوبي المستخدم لقياس حجم معظم الخلايا الحيوانية بالمحاضرة هو:",
+                options: [
+                    "الميكرون (Micron)",
+                    "السنتيمتر (Centimeter)",
+                    "المتر (Meter)",
+                    "الكيلومتر (Kilometer)"
+                ],
+                correct: 0,
+                explanation: "تقاس أحجام الخلايا بالميكرون (10 إلى 100 ميكرون)."
+            },
+            {
+                type: "mcq",
+                question: "العالم الذي أطلق مصطلح \"Cell\" لأول مرة استوحاه من شكل التشبه بـ:",
+                options: [
+                    "الغرف الصغيرة أو الصناديق المتراصة في الفلين",
+                    "حبيبات الرمل",
+                    "قطرات الماء",
+                    "خيوط العضلات"
+                ],
+                correct: 0,
+                explanation: "روبرت هوك شبه الفجوات الفارغة في الفلين بالغرف الصغار (Cells)."
+            },
+            {
+                type: "mcq",
+                question: "من هم العلماء الألمان الذين أسسوا نظرية الخلية بوضوح؟",
+                options: [
+                    "شلايدن وشوان",
+                    "روبرت هوك وربرت براون",
+                    "إرنست أوفرتون وفيرشو",
+                    "فون مول ودوجاردين"
+                ],
+                correct: 0,
+                explanation: "عالم النبات ماتياس شلايدن وعالم الفسيولوجي ثيودور شوان هما العالمان الألمان."
+            },
+            {
+                type: "mcq",
+                question: "الوحدة الأساسية لبناء الكائن الحي هي:",
+                options: [
+                    "النسيج",
+                    "الخلية",
+                    "العضو",
+                    "الجهاز"
+                ],
+                correct: 1,
+                explanation: "الخلية هي الوحدة الأساسية لبناء وتركيب الكائن الحي."
+            },
+            {
+                type: "mcq",
+                question: "عملية التخصيب والإخصاب تتطلب التحام خليتين هما:",
+                options: [
+                    "خلية عصبية وخلية عضلية",
+                    "الحيوان المنوي والبويضة",
+                    "كرية دم حمراء وكرية بيضاء",
+                    "خلية دهنية وخلية طلائية"
+                ],
+                correct: 1,
+                explanation: "الإخصاب هو التحام خليتين هما الحيوان المنوي والبويضة."
+            },
+            {
+                type: "mcq",
+                question: "العالم فيرشو يختص بـ:",
+                options: [
+                    "علم الأنسجة المرضية",
+                    "علم النبات التجريبي",
+                    "علم الفلك",
+                    "علم الأحياء المهرية المائية"
+                ],
+                correct: 0,
+                explanation: "فيرشو هو عالم الأنسجة المرضية الألماني."
+            },
+            {
+                type: "mcq",
+                question: "العالم كوليكر يختص بـ:",
+                options: [
+                    "علم الأجنة السويسري",
+                    "علم النبات الإنجليزي",
+                    "علم الكيمياء الفرنسي",
+                    "علم الأنسجة المرضية"
+                ],
+                correct: 0,
+                explanation: "كوليكر هو عالم الأجنة السويسري."
+            },
+            {
+                type: "mcq",
+                question: "أي خلية من الخلايا التالية تعتبر خلية وحيدة الخلية وتتغير أشكالها باستمرار للحركة والتغذية؟",
+                options: [
+                    "خلية الأميبا (Ameoba cell)",
+                    "الخلية العصبية",
+                    "الخلية العضلية الملساء",
+                    "كرية الدم الحمراء"
+                ],
+                correct: 0,
+                explanation: "خلية الأميبا تتكيف بأشكال متباينة وغير ثابتة لخدمة وظيفتها."
+            },
+            {
+                type: "mcq",
+                question: "تختلف أشكال وأحجام الخلايا بالرغم من أن الكائن الحي ناتج في الأساس من:",
+                options: [
+                    "ملايين الخلايا المختلفة من البداية",
+                    "خلية واحدة أصلاً",
+                    "ثلاث خلايا أولية",
+                    "انسجة جاهزة"
+                ],
+                correct: 1,
+                explanation: "تصل الاختلافات لأوجها رغم أن الكائن الحي ناتج أصلاً من خلية واحدة (الزيجوت)."
+            },
+            {
+                type: "mcq",
+                question: "العلم الذي يدخل في عزل ودراسة المكونات الكيميائية لأجزاء الخلية هو:",
+                options: [
+                    "علم الكيمياء",
+                    "علم الفيزياء الفلكية",
+                    "علم البيئة",
+                    "علم الجغرافيا"
+                ],
+                correct: 0,
+                explanation: "تمكن علماء الكيمياء من عزل المكونات الكيميائية لمعظم أجزاء الخلية وتحليلها."
+            },
+            {
+                type: "mcq",
+                question: "تتمثل الوظيفة الأساسية للزوائد الشجيرية بالخلية العصبية في:",
+                options: [
+                    "انقباض الخلية",
+                    "استقبال ونقل الرسائل العصبية من الخلايا الأخرى",
+                    "تخزين الدهون",
+                    "تكوين الأكسجين"
+                ],
+                correct: 1,
+                explanation: "تستقبل وتنقل الرسائل العصبية من خلال ارتباطها بالآلاف من المحاور."
+            },
+
+            // True / False Questions (61 to 80)
+            {
+                type: "tf",
+                question: "علم الخلية يقتصر فقط على دراسة التركيب الظاهري للخلية دون التدخل في الوظائف والتغيرات المرضية.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، علم الخلية يختص بدراسة الخلية من حيث الشكل، النوع، التركيب، الوظيفة، والتغيرات أثناء التمايز، النمو، التقدم في العمر والمرض."
+            },
+            {
+                type: "tf",
+                question: "لاحظ روبرت هوك عام 1665 خلايا الفلين الحية المنقسمة وقدم مصطلح الخلية.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، لاحظ روبرت هوك خلايا الفلين *الميتة* وليس الحية."
+            },
+            {
+                type: "tf",
+                question: "قام العالم روبرت براون بوصف نواة الخلية عام 1831.",
+                options: ["صواب", "خطأ"],
+                correct: 0,
+                explanation: "صواب، قام العالم الاسكتلندي روبرت براون بوصف النواة عام 1831."
+            },
+            {
+                type: "tf",
+                question: "ماتياس شلايدن هو عالم فسيولوجي بينما ثيودور شوان هو عالم نبات.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، شلايدن هو عالم النبات، وشوان هو عالم الفسيولوجي (العكس)."
+            },
+            {
+                type: "tf",
+                question: "أسس شلايدن وشوان نظرية الخلية بين عامي 1838 و 1839.",
+                options: ["صواب", "خطأ"],
+                correct: 0,
+                explanation: "صواب، وضعت نظرية الخلية بواسطة شلايدن وشوان في عامي 1838 و 1839."
+            },
+            {
+                type: "tf",
+                question: "تضمنت نظرية الخلية أن بعض الخلايا يمكن أن تتكون تلقائياً بدون انقسام خلايا سابقة.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، تضمنت النظرية أن *كل خلية تنشأ من انقسام خلية سابقة لها*."
+            },
+            {
+                type: "tf",
+                question: "وصف الباحثون دوجاردين وشولتز وبركنجي وفون مول البروتوبلازم في عام 1846.",
+                options: ["صواب", "خطأ"],
+                correct: 0,
+                explanation: "صواب، قام الباحثون الأربعة بوصف البروتوبلازم عام 1846."
+            },
+            {
+                type: "tf",
+                question: "فيرشو هو عالم أجنة سويسري وكوليكر هو عالم أنسجة مرضية ألماني.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، فيرشو هو عالم الأنسجة المرضية الألماني، وكوليكر هو عالم الأجنة السويسري."
+            },
+            {
+                type: "tf",
+                question: "أوضح فيرشو وكوليكر أن الكائن الحي يتطور من التحام الحيوان المنوي والبويضة بعقلية الإخصاب عام 1855.",
+                options: ["صواب", "خطأ"],
+                correct: 0,
+                explanation: "صواب، تم ذلك عام 1855."
+            },
+            {
+                type: "tf",
+                question: "وضع إرنست أوفرتون التصور البدائي لتركيب الغشاء البلازمي عام 1895.",
+                options: ["صواب", "خطأ"],
+                correct: 0,
+                explanation: "صواب، قام أوفرتون بذلك عام 1895."
+            },
+            {
+                type: "tf",
+                question: "يتراوح حجم معظم الخلايا الحيوانية بين 10 إلى 100 مليمتر.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، يتراوح بين 10 إلى 100 *ميكرون* وليس مليمتر."
+            },
+            {
+                type: "tf",
+                question: "تعتبر الوظيفة من الأسباب الهامة جداً في تحديد شكل وحجم الخلية.",
+                options: ["صواب", "خطأ"],
+                correct: 0,
+                explanation: "صواب، تلعب الوظيفة دوراً محدمًا وجوهريًا في تحديد شكل وحجم الخلية."
+            },
+            {
+                type: "tf",
+                question: "الشكل القرصي لكريات الدم الحمراء يقلل من كفاءة مرورها في الأوعية الدموية.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، الشكل القرصي *يساعدها* ويسهل مرورها عبر الأوعية الدموية الضيقة."
+            },
+            {
+                type: "tf",
+                question: "تستطيع الخلية العصبية نقل الآلاف من الرسائل العصبية بفضل زوائدها الشجيرية ومحورها الطويل.",
+                options: ["صواب", "خطأ"],
+                correct: 0,
+                explanation: "صواب، هذا التكيف التركيبي يسمح بنقل آلاف الرسائل العصبية."
+            },
+            {
+                type: "tf",
+                question: "تُعد الخلايا الدهنية والبويضات من أصغر الخلايا حجماً في جسم الكائن الحي.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، تعتبر من *أكبر* الخلايا حجماً بسبب تخزين كميات كبيرة من المواد الغذائية."
+            },
+            {
+                type: "tf",
+                question: "الشكل التكيفي للألياف العضلية الملساء يكون إسطوانياً.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، شكل العضلات الملساء *مغزلي*، بينما الإسطواني للهيكلية والقلبية."
+            },
+            {
+                type: "tf",
+                question: "الحيوانات المنوية تتميز بشكليها المغزلي الذيلِي للتكيف مع وظيفتها.",
+                options: ["صواب", "خطأ"],
+                correct: 0,
+                explanation: "صواب، الذيل يساعدها على السباحة والحركة للوصول للبويضة."
+            },
+            {
+                type: "tf",
+                question: "توجد الخلايا المهدبة في بطانة القصبة الهوائية والأمعاء وقنوات المبايض.",
+                options: ["صواب", "خطأ"],
+                correct: 0,
+                explanation: "صواب، كما ورد في المحاضرة."
+            },
+            {
+                type: "tf",
+                question: "تظل أشكال الخلايا الأميبية وخلايا الدم البيضاء ثابته تماماً ولا تتغير تحت أي ظرف.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، تتكيف الخلايا الأميبية وخلايا الدم البيضاء بأشكال متباينة وغير ثابتة لتخدم وظائفها كالحركة والبلعمة."
+            },
+            {
+                type: "tf",
+                question: "تتكون الخلية من السيتوبلازم والنواة وتحاط بوالجدار الخلوي السليولوزي في جميع الخلايا الحيوانية.",
+                options: ["صواب", "خطأ"],
+                correct: 1,
+                explanation: "خطأ، الخلايا الحيوانية تحاط بغشاء خلوي (Cell membrane)، ولا تحتوي على جدار خلوي سيليولوزي."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('quiz-screen').classList.add('flex');
+            document.getElementById('quiz-progress-badge').classList.remove('hidden');
+            
+            generateNavigatorDots();
+            loadQuestion(0);
+        }
+
+        function generateNavigatorDots() {
+            const navContainer = document.getElementById('questions-nav');
+            navContainer.innerHTML = '';
+            quizData.forEach((_, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `nav-dot-${idx}`;
+                btn.onclick = () => jumpToQuestion(idx);
+                btn.className = `w-7 h-7 rounded-lg text-xs font-bold transition-all flex items-center justify-center flex-shrink-0 bg-slate-100 text-slate-500 hover:bg-slate-200`;
+                btn.innerText = idx + 1;
+                navContainer.appendChild(btn);
+            });
+        }
+
+        function updateNavigator() {
+            quizData.forEach((_, idx) => {
+                const dot = document.getElementById(`nav-dot-${idx}`);
+                if (!dot) return;
+                
+                if (idx === currentQuestionIndex) {
+                    dot.className = `w-7 h-7 rounded-lg text-xs font-bold transition-all flex items-center justify-center flex-shrink-0 bg-blue-600 text-white ring-2 ring-blue-300`;
+                } else if (userAnswers[idx] !== null) {
+                    const isCorrect = userAnswers[idx] === quizData[idx].correct;
+                    if (isCorrect) {
+                        dot.className = `w-7 h-7 rounded-lg text-xs font-bold transition-all flex items-center justify-center flex-shrink-0 bg-emerald-500 text-white`;
+                    } else {
+                        dot.className = `w-7 h-7 rounded-lg text-xs font-bold transition-all flex items-center justify-center flex-shrink-0 bg-rose-500 text-white`;
+                    }
+                } else {
+                    dot.className = `w-7 h-7 rounded-lg text-xs font-bold transition-all flex items-center justify-center flex-shrink-0 bg-slate-100 text-slate-600 hover:bg-slate-200`;
+                }
+            });
+
+            // Scroll nav dot into view
+            const activeDot = document.getElementById(`nav-dot-${currentQuestionIndex}`);
+            if (activeDot) {
+                activeDot.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = quizData[index];
+
+            // Header & Section updates
+            document.getElementById('current-q-num').innerText = index + 1;
+            document.getElementById('question-badge').innerText = `سؤال ${index + 1} من 80`;
+            
+            if (q.type === 'mcq') {
+                document.getElementById('section-title').innerText = "القسم الأول: أسئلة الاختيار من متعدد (MCQ)";
+                document.getElementById('question-topic').innerText = index < 20 ? "تاريخ علم الخلية والعلماء" : "أشكال وأحجام ووظائف الخلايا";
+            } else {
+                document.getElementById('section-title').innerText = "القسم الثاني: أسئلة الصواب والخطأ (True/False)";
+                document.getElementById('question-topic').innerText = "تقييم العبارات والمفاهيم";
+            }
+
+            // Progress bar
+            const progress = Math.round(((index + 1) / quizData.length) * 100);
+            document.getElementById('progress-percent').innerText = `${progress}%`;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            // Question text
+            document.getElementById('question-text').innerText = q.question;
+
+            // Options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const answered = userAnswers[index] !== null;
+
+            q.options.forEach((optText, optIdx) => {
+                const optBtn = document.createElement('button');
+                optBtn.className = `option-card w-full p-4 rounded-xl text-right font-semibold text-sm border border-slate-200 flex items-center justify-between bg-white text-slate-700 hover:bg-slate-50 transition`;
+                
+                let letterBadge = '';
+                if (q.type === 'mcq') {
+                    const letters = ['أ', 'ب', 'ج', 'د'];
+                    letterBadge = `<span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-500 font-bold flex items-center justify-center text-xs ml-3 group-hover:bg-blue-100 group-hover:text-blue-600">${letters[optIdx]}</span>`;
+                } else {
+                    const icon = optIdx === 0 ? 'fa-check text-emerald-500' : 'fa-xmark text-rose-500';
+                    letterBadge = `<span class="w-7 h-7 rounded-lg bg-slate-100 font-bold flex items-center justify-center text-xs ml-3"><i class="fa-solid ${icon}"></i></span>`;
+                }
+
+                optBtn.innerHTML = `
+                    <div class="flex items-center">
+                        ${letterBadge}
+                        <span>${optText}</span>
+                    </div>
+                    <div class="status-icon text-lg"></div>
+                `;
+
+                if (answered) {
+                    optBtn.classList.add('disabled');
+                    optBtn.disabled = true;
+
+                    if (optIdx === q.correct) {
+                        optBtn.className = `option-card w-full p-4 rounded-xl text-right font-semibold text-sm border-2 border-emerald-500 bg-emerald-50 text-emerald-900 flex items-center justify-between`;
+                        optBtn.querySelector('.status-icon').innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i>`;
+                    } else if (optIdx === userAnswers[index]) {
+                        optBtn.className = `option-card w-full p-4 rounded-xl text-right font-semibold text-sm border-2 border-rose-500 bg-rose-50 text-rose-900 flex items-center justify-between`;
+                        optBtn.querySelector('.status-icon').innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600"></i>`;
+                    }
+                } else {
+                    optBtn.onclick = () => selectOption(optIdx);
+                }
+
+                optionsContainer.appendChild(optBtn);
+            });
+
+            // Explanation box
+            const expBox = document.getElementById('explanation-box');
+            if (answered) {
+                expBox.classList.remove('hidden');
+                document.getElementById('explanation-text').innerText = q.explanation;
+                
+                if (userAnswers[index] === q.correct) {
+                    expBox.className = "mt-6 p-4 rounded-xl text-sm leading-relaxed border bg-emerald-50 border-emerald-200 text-emerald-900";
+                    document.getElementById('explanation-title').className = "font-bold mb-1 flex items-center gap-2 text-emerald-700";
+                } else {
+                    expBox.className = "mt-6 p-4 rounded-xl text-sm leading-relaxed border bg-rose-50 border-rose-200 text-rose-900";
+                    document.getElementById('explanation-title').className = "font-bold mb-1 flex items-center gap-2 text-rose-700";
+                }
+            } else {
+                expBox.classList.add('hidden');
+            }
+
+            // Prev / Next buttons
+            document.getElementById('prev-btn').disabled = index === 0;
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (index === quizData.length - 1) {
+                nextBtn.innerHTML = `إنهاء الاختبار <i class="fa-solid fa-flag-checkered mr-1"></i>`;
+            } else {
+                nextBtn.innerHTML = `التالي <i class="fa-solid fa-chevron-left mr-1"></i>`;
+            }
+
+            nextBtn.disabled = !answered;
+
+            updateNavigator();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function jumpToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('flex');
+            document.getElementById('quiz-progress-badge').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            let correctCount = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === quizData[idx].correct) {
+                    correctCount++;
+                }
+            });
+
+            const wrongCount = quizData.length - correctCount;
+            const percentage = Math.round((correctCount / quizData.length) * 100);
+
+            document.getElementById('score-percentage').innerText = percentage;
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('wrong-count').innerText = wrongCount;
+
+            const iconContainer = document.getElementById('result-icon');
+            const title = document.getElementById('result-title');
+            const subtitle = document.getElementById('result-subtitle');
+
+            if (percentage >= 85) {
+                iconContainer.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl bg-emerald-100 text-emerald-600 border-4 border-emerald-200";
+                iconContainer.innerHTML = `<i class="fa-solid fa-trophy"></i>`;
+                title.innerText = "ممتاز جداً! أداء استثنائي 🌟";
+                subtitle.innerText = "لقد أتقنت المحاضرة الأولى في علم الخلية بشكل كامل ودقيق!";
+            } else if (percentage >= 65) {
+                iconContainer.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl bg-blue-100 text-blue-600 border-4 border-blue-200";
+                iconContainer.innerHTML = `<i class="fa-solid fa-medal"></i>`;
+                title.innerText = "نتيجة جيدة جداً! 👍";
+                subtitle.innerText = "لديك استيعاب متين للمادة، يمكنك مراجعة الأسئلة الخاطئة للوصول للدرجة النهائبة.";
+            } else {
+                iconContainer.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl bg-amber-100 text-amber-600 border-4 border-amber-200";
+                iconContainer.innerHTML = `<i class="fa-solid fa-book-open"></i>`;
+                title.innerText = "يحتاج إلى مراجعة وتكرار 📚";
+                subtitle.innerText = "يُنصح بإعادة قراءة ملف المحاضرة والتركيز على تواريخ العلماء وأشكال الخلايا الوظيفية.";
+            }
+        }
+
+        function restartQuiz() {
+            userAnswers = new Array(quizData.length).fill(null);
+            document.getElementById('result-screen').classList.add('hidden');
+            startQuiz();
+        }
+    </script>
+</body>
+</html>
+```eof
+
+### مميزات الملف والتطبيق التفاعلي:
+1. **شامل ودقيق 100%:** يتكون من **80 سؤالاً حقيقياً** مقسمة بالتفصيل (60 سؤال اختياري + 20 سؤال صواب وخطأ) مغطية كافة تواريخ وتخصصات العلماء، الأشكال والوظائف التكيفية، العوامل المؤثرة على حجم وشكل الخلايا.
+2. **شرح وتصحيح فوري:** يحتوي كل سؤال على شرح علمي دقيق ومرجع للإجابة الصحيحة يظهر فور الاختيار.
+3. **تصميم احترافي جاهز للفتح فوراً:** تطبيق ويب كامل ومتكامل يستجيب لكافة الشاشات (الهواتف والأجهزة اللوحية والكمبيوتر) ومصمم باللغة العربية بدعم RTL.
+4. **سهولة الاستخدام والتنقل:** شريط تقدم مع أزرار تنقل سريع بين الأسئلة للوصول لأي سؤال وتتبّع نتيجتك وحساب الدرجة النهائية بالنعسية المئوية تلقائياً.
